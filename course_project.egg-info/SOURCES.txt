@@ -1,0 +1,11 @@
+README.rst
+setup.py
+course_project/__init__.py
+course_project/__main__.py
+course_project/app.py
+course_project/models.py
+course_project.egg-info/PKG-INFO
+course_project.egg-info/SOURCES.txt
+course_project.egg-info/dependency_links.txt
+course_project.egg-info/requires.txt
+course_project.egg-info/top_level.txt
