@@ -72,7 +72,7 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    budget = Column(String)
+    budget = Column(Integer)
 
     def __repr__(self):
         return "<User(name='%s', budget='%s')>" % (
