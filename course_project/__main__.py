@@ -1,8 +1,9 @@
-from .app import engine, window, app, session
+from .app import engine, app, session
 from .models import Base, Department
 from .data_generator import get_data
 import sys
 from sqlalchemy import func
+from .gui import MainWindow
 
 
 def more_data(session):
@@ -15,6 +16,7 @@ def more_data(session):
 
 
 if __name__ == "__main__":
+    window = MainWindow()
     Base.metadata.create_all(engine)
     more_data(session)
     window.init_ui()

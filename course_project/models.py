@@ -1,6 +1,9 @@
 from sqlalchemy import Column,\
     Integer, String, ForeignKey
-from .app import Base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+
+Base = declarative_base()
 
 
 class Department(Base):
@@ -9,7 +12,7 @@ class Department(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     director = Column(String)
-    purchase = Column(ForeignKey("purchase.id"))
+    purchase_id = Column(ForeignKey("purchase.id"))
 
     def __repr__(self):
         return "<User(name='%s', director='%s', purchase='%s')>" % (
@@ -21,11 +24,11 @@ class Branch(Base):
 
     id = Column(Integer, primary_key=True)
     address = Column(String)
-    purchase = Column(ForeignKey("purchase.id"))
+    purchase_id = Column(ForeignKey("purchase.id"))
 
     def __repr__(self):
         return "<User(address='%s', purchase='%s')>" % (
-                             self.address, self.purchase)
+                             self.address, self.purchase_id)
 
 
 class Purchase(Base):
@@ -34,12 +37,16 @@ class Purchase(Base):
     id = Column(Integer, primary_key=True)
     item = Column(String)
     amount = Column(Integer)
-    supplier = Column(ForeignKey("supplier.id"))
-    project = Column(ForeignKey("project.id"))
+    supplier_id = Column(ForeignKey("supplier.id"))
+    project_id = Column(ForeignKey("project.id"))
+
+    #supplier = relationship("Supplier", uselist=False,
+    #                        foreign_keys=[supplier_id],
+    #                        primaryjoin="Supplier.id == Purchase.supplier_id")
 
     def __repr__(self):
         return "<User(item='%s', amount='%s', supplier='%s', project='%s')>"\
-             % (self.item, self.amount, self.supplier, self.project)
+             % (self.item, self.amount, self.supplier_id, self.project_id)
 
 
 class Equipment(Base):
@@ -47,11 +54,11 @@ class Equipment(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    project = Column(ForeignKey("project.id"))
+    project_id = Column(ForeignKey("project.id"))
 
     def __repr__(self):
-        return "<User(name='%s', fullname='%s', nickname='%s')>" % (
-                             self.name, self.fullname, self.nickname)
+        return "<User(name='%s', project_id='%s')>" % (
+                             self.name, self.project_id)
 
 
 class Supplier(Base):
@@ -60,11 +67,15 @@ class Supplier(Base):
     id = Column(Integer, primary_key=True)
     organization = Column(String)
     detail = Column(String)
-    purchase = Column(ForeignKey("purchase.id"))
+    purchase_id = Column(ForeignKey("purchase.id"))
+
+    #purchase = relationship("Purchase", uselist=False,
+    #                        foreign_keys=[purchase_id],
+    #                        primaryjoin="Purchase.id == Supplier.purchase_id")
 
     def __repr__(self):
         return "<User(organization='%s', detail='%s', purchase='%s')>" % (
-                             self.organization, self.detail, self.purchase)
+                             self.organization, self.detail, self.purchase_id)
 
 
 class Project(Base):

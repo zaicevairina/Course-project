@@ -58,13 +58,12 @@ def get_data(begin: int, end: int):
     shuffle(supplier)
     shuffle(project)
     for i in range(end-begin):
-        department[i].purchase = purchase[i].id
-        branch[i].purchase = purchase[i].id
-        purchase[i].project = project[i].id
-        purchase[i].supplier = supplier[i].id
-        equipment[i].project = project[i].id
-        supplier[i].purchase = purchase[i].id
-        project[i].budget = project[i].id
+        department[i].purchase_id = purchase[i].id
+        branch[i].purchase_id = purchase[i].id
+        purchase[i].project_id = project[i].id
+        purchase[i].supplier_id = supplier[i].id
+        equipment[i].project_id = project[i].id
+        supplier[i].purchase_id = purchase[i].id
     return [department, branch, purchase, equipment, supplier, project]
 
 

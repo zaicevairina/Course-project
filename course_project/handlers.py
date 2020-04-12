@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import (QLineEdit, QDialog, QDialogButtonBox, QComboBox,
                              QFormLayout, QLabel, QSpinBox, QRadioButton)
-
+from .models import Department, Equipment, Purchase, Supplier, Branch, Project
+from .app import Session
 
 DESCRIPTION_1 = "Руководители отделов, закупивших предмет типа Х"
 DESCRIPTION_2 = "Реквизиты поставщиков, поставляющих предметы для проекта X,\n\
@@ -33,6 +34,16 @@ def add_to_db(self):
 
 
 def query_1(self):
+    def get_result(X: str):
+        session = Session()
+        result = session.\
+            query(Department.director).\
+            join(Purchase).\
+            filter(Purchase.item == X).all()
+        print(result)
+        session.commit()
+    # Example
+    get_result('item_2')
     ui_elements = [("", QLabel(DESCRIPTION_1)), ("Предметы :", QComboBox())]
     dialog = Dialog(ui_elements, "Найти руководителей")
     if dialog.exec() == QDialog.Accepted:
@@ -40,6 +51,15 @@ def query_1(self):
 
 
 def query_2(self):
+    def get_result(X: int):
+        session = Session()
+        #result = session\
+        #    .query(Supplier.detail)\
+        #    .join(Purchase)\
+        #    .filter(Purchase.project == X)\
+        #    .order_by(Purchase.amount.asc()).all()
+        # print(result)
+    get_result(4)
     ui_elements = [("", QLabel(DESCRIPTION_2)),
                    ("Проект", QLineEdit())]
     dialog = Dialog(ui_elements, "Получить реквизиты")
@@ -48,6 +68,15 @@ def query_2(self):
 
 
 def query_3(self):
+    def get_result(X: int, Y: str):
+        session = Session()
+        result = session.query(Branch.address, Purchase.item, Project.name)\
+            .filter(Project.budget >= X)\
+            .filter(Equipment.name.like(f"%{Y}%")).all()
+        print(result)
+        session.commit()
+    # Example
+    get_result(8, '6')
     button_1 = QRadioButton("Подстрока 1")
     button_2 = QRadioButton("Подстрока 2")
     button_3 = QRadioButton("Подстрока 3")
