@@ -36,13 +36,14 @@ def add_to_db(self):
 def query_1(self):
     def get_result(X: str):
         session = Session()
-        result = session.\
-            query(Department.director).\
-            join(Purchase).\
-            filter(Purchase.item == X).all()
-        print(result)
+        result = session\
+            .query(Department.director)\
+            .select_from(Department)\
+            .join(Purchase)\
+            .filter(Purchase.item == X)
+        print(f'\n--> sql query:\n{result}\n\
+\n--> result:\n{result.all()}\n')
         session.commit()
-    # Example
     get_result('item_2')
     ui_elements = [("", QLabel(DESCRIPTION_1)), ("Предметы :", QComboBox())]
     dialog = Dialog(ui_elements, "Найти руководителей")
@@ -53,12 +54,14 @@ def query_1(self):
 def query_2(self):
     def get_result(X: int):
         session = Session()
-        #result = session\
-        #    .query(Supplier.detail)\
-        #    .join(Purchase)\
-        #    .filter(Purchase.project == X)\
-        #    .order_by(Purchase.amount.asc()).all()
-        # print(result)
+        result = session\
+            .query(Supplier.detail)\
+            .select_from(Supplier)\
+            .join(Purchase, Purchase.supplier_id == Supplier.id)\
+            .filter(Purchase.project_id == X)\
+            .order_by(Purchase.amount.asc())
+        print(f'\n--> sql query:\n{result}\n\
+\n--> result:\n{result.all()}\n')
     get_result(4)
     ui_elements = [("", QLabel(DESCRIPTION_2)),
                    ("Проект", QLineEdit())]
@@ -71,9 +74,14 @@ def query_3(self):
     def get_result(X: int, Y: str):
         session = Session()
         result = session.query(Branch.address, Purchase.item, Project.name)\
+            .select_from(Branch)\
+            .join(Purchase)\
+            .join(Project)\
+            .join(Equipment)\
             .filter(Project.budget >= X)\
-            .filter(Equipment.name.like(f"%{Y}%")).all()
-        print(result)
+            .filter(Equipment.name.like(f"%{Y}%"))
+        print(f'\n--> sql query:\n{result}\n\
+\n--> result:\n{result.all()}\n')
         session.commit()
     # Example
     get_result(8, '6')

@@ -1,7 +1,6 @@
 from sqlalchemy import Column,\
     Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -40,10 +39,6 @@ class Purchase(Base):
     supplier_id = Column(ForeignKey("supplier.id"))
     project_id = Column(ForeignKey("project.id"))
 
-    #supplier = relationship("Supplier", uselist=False,
-    #                        foreign_keys=[supplier_id],
-    #                        primaryjoin="Supplier.id == Purchase.supplier_id")
-
     def __repr__(self):
         return "<User(item='%s', amount='%s', supplier='%s', project='%s')>"\
              % (self.item, self.amount, self.supplier_id, self.project_id)
@@ -68,10 +63,6 @@ class Supplier(Base):
     organization = Column(String)
     detail = Column(String)
     purchase_id = Column(ForeignKey("purchase.id"))
-
-    #purchase = relationship("Purchase", uselist=False,
-    #                        foreign_keys=[purchase_id],
-    #                        primaryjoin="Purchase.id == Supplier.purchase_id")
 
     def __repr__(self):
         return "<User(organization='%s', detail='%s', purchase='%s')>" % (
