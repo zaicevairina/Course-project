@@ -1,12 +1,11 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QPushButton,
                              QTableView, QVBoxLayout, QHBoxLayout)
 from PyQt5.QtCore import QCoreApplication
-from .handlers import Dialog
+from handlers import Dialog
+from requests import query1, query2, query3, get_goods, get_purchases, add_branch, max_budget
 from PyQt5.QtWidgets import (QLineEdit, QDialog, QDialogButtonBox, QComboBox,
                              QFormLayout, QLabel, QSpinBox, QRadioButton,QTextBrowser)
-
-from .models import Department, Equipment, Purchase, Supplier, Branch, Project
-from .app import Session
+# from app import Session
 
 DESCRIPTION_1 = "Руководители отделов, закупивших предмет типа Х"
 DESCRIPTION_2 = "Реквизиты поставщиков, поставляющих предметы для проекта X,\n\
@@ -71,76 +70,50 @@ class MainWindow(QMainWindow):
 
     def add_to_db(self):
         ui_elements = [("Адрес", QLineEdit()), ("Закупка", QComboBox())]
+        ui_elements[1][1].addItems(get_purchases())
         dialog = Dialog(ui_elements, "Добавить запись")
         if dialog.exec() == QDialog.Accepted:
-            print("Запись в базу")
+            self._view.setText(add_branch(ui_elements[0][1].text(), ui_elements[1][1].currentText()))
 
     def query_1(self):
-        def get_result(X: str):
-            session = Session()
-            result = session.query(Department.director).select_from(Department) \
-                .join(Purchase).filter(Purchase.item == X)
-            session.commit()
 
         ui_elements = [("", QLabel(DESCRIPTION_1)), ("Предметы :", QComboBox())]
-        ui_elements[1][1].addItems(list(map(lambda x: str(x), [1, 2, 4, 'asgr'])))
+        ui_elements[1][1].addItems(get_goods())
         dialog = Dialog(ui_elements, "Найти руководителей")
 
         if dialog.exec() == QDialog.Accepted:
-            self._view.setText('123')
-            import time
+            self._view.setText(query1(ui_elements[1][1].currentText()))
             # time.sleep(100)
             # self.setModel(get_result(ui_elements[1][1].currentText()))
 
     def query_2(self):
-        def get_result(X: int):
-            session = Session()
-            result = session \
-                .query(Supplier.detail) \
-                .select_from(Supplier) \
-                .join(Purchase, Purchase.supplier_id == Supplier.id) \
-                .filter(Purchase.project_id == X) \
-                .order_by(Purchase.amount.asc())
-            print(f'\n--> sql query:\n{result}\n\
-    \n--> result:\n{result.all()}\n')
-
-        get_result(4)
         ui_elements = [("", QLabel(DESCRIPTION_2)),
                        ("Проект", QLineEdit())]
         dialog = Dialog(ui_elements, "Получить реквизиты")
         if dialog.exec() == QDialog.Accepted:
-            self.setModel(get_result(ui_elements[1][1].text()))
+            self._view.setText(query2(ui_elements[1][1].text()))
+            # self.setModel(get_result(ui_elements[1][1].text()))
 
 
     def query_3(self):
-        def get_result(X: int, Y: str):
-            session = Session()
-            result = session.query(Branch.address, Purchase.item, Project.name) \
-                .select_from(Branch) \
-                .join(Purchase) \
-                .join(Project) \
-                .join(Equipment) \
-                .filter(Project.budget >= X) \
-                .filter(Equipment.name.like(f"%{Y}%"))
-            print(f'\n--> sql query:\n{result}\n\
-    \n--> result:\n{result.all()}\n')
-            session.commit()
-
         # Example
-        button_1 = QRadioButton("1")
-        button_2 = QRadioButton("2")
-        button_3 = QRadioButton("3")
+        button_1 = QRadioButton("фол")
+        button_2 = QRadioButton("шил")
+        button_3 = QRadioButton("пил")
         ui_elements = [("", QLabel(DESCRIPTION_3)),
                        ("Бюджет", QSpinBox()),
                        ("", button_1), ("", button_2), ("", button_3)]
-        ui_elements[1][1].setMaximum(10 + 1)
+        ui_elements[1][1].setMaximum(max_budget())
         dialog = Dialog(ui_elements, "Поиск по названию оборудования")
         if dialog.exec() == QDialog.Accepted:
             val = ui_elements[1][1].value()
             if (button_1.isChecked()):
-                self.setModel(get_result(val, '1'))
+                self._view.setText(query3(val, 'фол'))
             if (button_2.isChecked()):
-                self.setModel(get_result(val, '2'))
+                self._view.setText(query3(val, 'шил'))
+                # self.setModel(get_result(val, '2'))
             if (button_3.isChecked()):
-                self.setModel(get_result(val, '3'))
+                self._view.setText(query3(val, 'пил'))
+
+                # self.setModel(get_result(val, '3'))   
 

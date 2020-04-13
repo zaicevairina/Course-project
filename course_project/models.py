@@ -1,84 +1,55 @@
-from sqlalchemy import Column,\
-    Integer, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
+from peewee import *
+from datetime import date, time
 
-# от него наследуются отсальные orm классы
-Base = declarative_base()
+db = SqliteDatabase('app.db')
 
+class BaseModel(Model):
+    class Meta:
+        database = db
 
-class Department(Base):
-    __tablename__ = 'department'
+class Department(BaseModel):
+    title = CharField(default='Smt')
+    director = CharField(default='John')
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    director = Column(String)
-    # purchase_id = relationship("Purchase")
-    purchase_id = Column(ForeignKey("purchase.id"))
+class Branch(BaseModel):
+	address = CharField()
 
-    def __repr__(self):
-        return "<User(name='%s', director='%s', purchase='%s')>" % (
-                             self.name, self.director, self.purchase)
+class Supplier(BaseModel):
+	organization = CharField()
+	requisites = IntegerField()
 
+class Project(BaseModel):
+	title = CharField()
+	budget = IntegerField()
 
-class Branch(Base):
-    __tablename__ = 'branch'
+class Purchase(BaseModel):
+	good = CharField()
+	amount = IntegerField()
+	department = ForeignKeyField(Department, backref='purchases')
+	branch = ForeignKeyField(Branch, backref='purchases')
+	project = ForeignKeyField(Project, backref='purchases')
+	supplier = ForeignKeyField(Supplier, backref='purchases')
 
-    id = Column(Integer, primary_key=True)
-    address = Column(String)
-    purchase_id = Column(ForeignKey("purchase.id"))
-
-    def __repr__(self):
-        return "<User(address='%s', purchase='%s')>" % (
-                             self.address, self.purchase_id)
-
-
-class Purchase(Base):
-    __tablename__ = 'purchase'
-
-    id = Column(Integer, primary_key=True)
-    item = Column(String)
-    amount = Column(Integer)
-    # department = Column(ForeignKey("Department.Purchase"))
-    supplier_id = Column(ForeignKey("supplier.id"))
-    project_id = Column(ForeignKey("project.id"))
-
-    def __repr__(self):
-        return "<User(item='%s', amount='%s', supplier='%s', project='%s')>"\
-             % (self.item, self.amount, self.supplier_id, self.project_id)
+class Equipment(BaseModel):
+	name = CharField()
+	project = ForeignKeyField(Project, backref='equipments')
 
 
-class Equipment(Base):
-    __tablename__ = 'equipment'
+# class ViewerToSession(BaseModel):
+#     viewer = ForeignKeyField(Viewer, backref='viewer_sessions')
+#     session = ForeignKeyField(Session, backref='session_viewers')
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    project_id = Column(ForeignKey("project.id"))
-
-    def __repr__(self):
-        return "<User(name='%s', project_id='%s')>" % (
-                             self.name, self.project_id)
+#     class Meta:
+#         primary_key = CompositeKey('viewer', 'session')
 
 
-class Supplier(Base):
-    __tablename__ = 'supplier'
+if __name__ == '__main__':
+	Department.create_table()
+	Branch.create_table()
+	Supplier.create_table()
+	Project.create_table()
+	Purchase.create_table()
+	Equipment.create_table()
 
-    id = Column(Integer, primary_key=True)
-    organization = Column(String)
-    detail = Column(String)
-    purchase_id = Column(ForeignKey("purchase.id"))
+		
 
-    def __repr__(self):
-        return "<User(organization='%s', detail='%s', purchase='%s')>" % (
-                             self.organization, self.detail, self.purchase_id)
-
-
-class Project(Base):
-    __tablename__ = 'project'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    budget = Column(Integer)
-
-    def __repr__(self):
-        return "<User(name='%s', budget='%s')>" % (
-                             self.name, self.budget)
