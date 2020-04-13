@@ -2,6 +2,7 @@ from sqlalchemy import Column,\
     Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
+# от него наследуются отсальные orm классы
 Base = declarative_base()
 
 
@@ -11,6 +12,7 @@ class Department(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     director = Column(String)
+    # purchase_id = relationship("Purchase")
     purchase_id = Column(ForeignKey("purchase.id"))
 
     def __repr__(self):
@@ -36,6 +38,7 @@ class Purchase(Base):
     id = Column(Integer, primary_key=True)
     item = Column(String)
     amount = Column(Integer)
+    # department = Column(ForeignKey("Department.Purchase"))
     supplier_id = Column(ForeignKey("supplier.id"))
     project_id = Column(ForeignKey("project.id"))
 

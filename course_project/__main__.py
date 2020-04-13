@@ -17,7 +17,9 @@ def more_data(session):
 
 if __name__ == "__main__":
     window = MainWindow()
+    # создание таблицы
     Base.metadata.create_all(engine)
+    # добавляем данные в бд
     more_data(session)
     window.init_ui()
     window.show()
