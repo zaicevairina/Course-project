@@ -1,21 +1,22 @@
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QPushButton,
-                             QTableView, QVBoxLayout, QHBoxLayout)
+                             QTextBrowser, QVBoxLayout, QHBoxLayout,)
 from PyQt5.QtCore import QCoreApplication
-from .handlers import query_1, query_2, query_3, add_to_db
 
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self._view = QTableView()
+        self._view = QTextBrowser()
         self._buttonAdd = QPushButton("Добавить")
         self._quit = QPushButton('Закончить')
-        self._buttons = [(QPushButton("Первый запрос"), query_1),
-                         (QPushButton("Второй запрос"), query_2),
-                         (QPushButton("Третий запрос"), query_3)]
+        self._buttons = []
 
-    def init_ui(self):
+
+    def init_ui(self, query_1, query_2, query_3, add_to_db):
+        self._buttons.extend([(QPushButton("Первый запрос"), query_1),
+                              (QPushButton("Второй запрос"), query_2),
+                              (QPushButton("Третий запрос"), query_3)])
         widget = QWidget()
         main_layout = QVBoxLayout()
         tmp_layout = QHBoxLayout()

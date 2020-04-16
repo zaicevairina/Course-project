@@ -1,5 +1,9 @@
 from .models import Branch, Department, Project, Purchase, Equipment, Supplier
-from random import shuffle
+
+'''
+До занесения в базу id == None, поэтому ручками
+Может стоило использовать refresh
+'''
 
 
 def generate_department(begin: int, end: int):
@@ -25,7 +29,7 @@ def generate_purchase(begin: int, end: int):
 
 def generate_equipment(begin: int, end: int):
     return [
-        Equipment(id=i, name=f'name_{i}')
+        Equipment(id=i, name=f'equipment_{i}')
         for i in range(begin, end)
         ]
 
@@ -39,7 +43,7 @@ def generate_supplier(begin: int, end: int):
 
 def generate_project(begin: int, end: int):
     return [
-        Project(id=i, name=f'name_{i}', budget=i)
+        Project(id=i, name=f'project_{i}', budget=i*i)
         for i in range(begin, end)
         ]
 
@@ -51,12 +55,13 @@ def get_data(begin: int, end: int):
     equipment = generate_equipment(begin, end)
     supplier = generate_supplier(begin, end)
     project = generate_project(begin, end)
-    shuffle(department)
-    shuffle(branch)
-    shuffle(purchase)
-    shuffle(equipment)
-    shuffle(supplier)
-    shuffle(project)
+    # from random import shuffle
+    # shuffle(department)
+    # shuffle(branch)
+    # shuffle(purchase)
+    # shuffle(equipment)
+    # shuffle(supplier)
+    # shuffle(project)
     for i in range(end-begin):
         department[i].purchase_id = purchase[i].id
         branch[i].purchase_id = purchase[i].id
@@ -64,6 +69,20 @@ def get_data(begin: int, end: int):
         purchase[i].supplier_id = supplier[i].id
         equipment[i].project_id = project[i].id
         supplier[i].purchase_id = purchase[i].id
+    # для второй
+    purchase[0].project_id = begin + 1
+    purchase[1].project_id = begin + 1
+    purchase[2].project_id = begin + 1
+    # для третьей
+    equipment[0].name += 'sub_1'
+    equipment[1].name += 'sub_1'
+    equipment[2].name += 'sub_1'
+    equipment[3].name += 'sub_2'
+    equipment[4].name += 'sub_2'
+    equipment[5].name += 'sub_2'
+    equipment[6].name += 'sub_3'
+    equipment[7].name += 'sub_3'
+    equipment[8].name += 'sub_3'
     return [department, branch, purchase, equipment, supplier, project]
 
 

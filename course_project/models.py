@@ -21,7 +21,7 @@ class Department(Base):
 class Branch(Base):
     __tablename__ = 'branch'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     address = Column(String)
     purchase_id = Column(ForeignKey("purchase.id"))
 
